@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA Space Apps Challenge | Celestial Relics & Sentinels on Moon & Mars</title>
+  <meta name="description" content="Explore the comprehensive historical catalog of NASA rovers, landers, and satellites left on the Moon and Mars. Featuring interactive 3D planetary telemetry, mission stories, and relics left behind.">
+  <meta name="theme-color" content="#05070e">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230b3d91'/><path d='M10 50 Q50 15 90 50 Q50 85 10 50' stroke='%2300e5ff' stroke-width='4' fill='none'/><path d='M25 80 L50 20 L75 80' stroke='%23fc3d21' stroke-width='6' fill='none'/></svg>">
+</head>
+<body>
+
+  <!-- Fullscreen Cosmic Canvas Background -->
+  <canvas id="starfield-canvas"></canvas>
+
+  <!-- ================= 1. FIRST OPENING: ANIMATED NASA INTRO & SPLASH SCREEN ================= -->
+  <div id="intro-overlay" class="intro-overlay" role="dialog" aria-modal="true" aria-label="NASA Mission Briefing">
+    <div class="intro-container">
+      
+      <!-- Animated NASA Meatball & Worm SVG Logo -->
+      <div class="nasa-logo-anim-wrapper">
+        <svg class="nasa-meatball-svg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Deep Space Blue Sphere -->
+          <circle cx="200" cy="120" r="90" fill="#0b3d91" />
+          
+          <!-- Stars in Sphere -->
+          <g fill="#ffffff" opacity="0.85">
+            <circle cx="150" cy="80" r="2.5" />
+            <circle cx="240" cy="75" r="2" />
+            <circle cx="180" cy="150" r="1.8" />
+            <circle cx="220" cy="160" r="2.2" />
+            <circle cx="130" cy="130" r="1.5" />
+            <circle cx="260" cy="120" r="2.8" />
+            <circle cx="170" cy="95" r="1.5" />
+          </g>
+
+          <!-- Animated White Orbital Ellipse Track -->
+          <ellipse class="svg-orbit-ring" cx="200" cy="120" rx="145" ry="48" transform="rotate(-28 200 120)" stroke="#00e5ff" stroke-width="4.5" fill="none" stroke-linecap="round" />
+          
+          <!-- Animated NASA Supersonic Red Vector Wing -->
+          <path class="svg-red-vector" d="M90 170 L200 65 L245 130 L310 185" stroke="#fc3d21" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+          <!-- Bold NASA Typography ("The Meatball / Worm" Hybrid Accent) -->
+          <text class="svg-nasa-text" x="200" y="138" font-family="'Orbitron', sans-serif" font-weight="900" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="4">NASA</text>
+        </svg>
+      </div>
+
+      <div class="intro-hackathon-badge">NASA Space Apps Challenge 2026 Edition</div>
+      <h2 class="intro-title">Celestial Relics & Sentinels</h2>
+      <p class="intro-subtitle">A living chronicle of every satellite, lander, and rover left by NASA on the Moon and Mars.</p>
+
+      <!-- Simulated Real-Time DSN Telemetry Terminal -->
+      <div id="intro-terminal" class="intro-terminal-box" aria-live="polite"></div>
+
+      <div class="intro-actions">
+        <button id="enter-app-btn" class="primary-intro-btn">
+          <span>ENGAGE TELEMETRY ARCHIVE</span>
+          <span>⚡</span>
+        </button>
+        <button id="skip-intro-btn" class="secondary-intro-btn">Skip Cinematic</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. SITE NAVIGATION HEADER ================= -->
+  <header class="site-nav">
+    <a href="#" class="nav-brand">
+      <svg class="nav-nasa-logo" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="30" font-family="'Orbitron', sans-serif" font-weight="900" font-size="34" fill="#fc3d21" letter-spacing="3">NASA</text>
+        <circle cx="106" cy="20" r="10" fill="#0b3d91" />
+        <ellipse cx="106" cy="20" rx="15" ry="5" transform="rotate(-30 106 20)" stroke="#00e5ff" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="nav-title-group">
+        <h1>CELESTIAL CHRONICLES</h1>
+        <div class="nav-subtitle">Deep Space Artifact Archive • Moon & Mars</div>
+      </div>
+    </a>
+
+    <nav aria-label="Main Navigation">
+      <ul class="nav-menu">
+        <li><a href="#hero-section">Orbital Radar</a></li>
+        <li><a href="#explorer-section">Missions & Relics</a></li>
+        <li><a href="#comparison-section">Tech Matrix</a></li>
+        <li><a href="#transmission-section">DSN Uplink</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="audio-toggle-btn" class="icon-btn" title="Toggle Atmospheric Soundscape">
+        <span id="audio-icon">🔇</span>
+        <span>Audio</span>
+      </button>
+      <button id="replay-intro-btn" class="icon-btn" title="Replay NASA Animated Opening">
+        <span>🎬</span>
+        <span>Intro</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= 3. HERO & INTERACTIVE 3D PLANET TELEMETRY ================= -->
+    <section id="hero-section" class="hero-section">
+      <div class="hero-grid">
+        
+        <!-- Left Column: Story & Planetary Switcher -->
+        <div class="hero-left">
+          <div class="hero-badge-tag">
+            <span>● DEEP SPACE NETWORK ACTIVE</span>
+            <span>|</span>
+            <span>GOLDSTONE • MADRID • CANBERRA</span>
+          </div>
+
+          <h2 class="hero-headline">
+            Silent Sentinels <br>
+            <span class="highlight-gradient">Preserved in Cosmic Solitude</span>
+          </h2>
+
+          <p class="hero-description">
+            Across 55 years of interplanetary discovery, NASA has deployed robotic explorers and manned descent stages that never returned to Earth. They remain in the vacuum of the Moon and the crimson dust storms of Mars—standing as permanent monuments to humanity's quest to touch the stars.
+          </p>
+
+          <!-- Planet Quick-Switch Bar -->
+          <div class="planet-selector-bar">
+            <button class="planet-pill active" data-planet="all">
+              <span>🌌</span>
+              <span>All Worlds</span>
+            </button>
+            <button class="planet-pill" data-planet="Moon">
+              <span>🌑</span>
+              <span>The Moon (Luna)</span>
+            </button>
+            <button class="planet-pill" data-planet="Mars">
+              <span>🔴</span>
+              <span>Mars (Ares)</span>
+            </button>
+          </div>
+
+          <!-- Quick Telemetry Counters -->
+          <div class="hero-telemetry-row">
+            <div class="telemetry-tile">
+              <span class="tile-number">18+</span>
+              <span class="tile-label">Documented Relics</span>
+            </div>
+            <div class="telemetry-tile">
+              <span class="tile-number">120+ km</span>
+              <span class="tile-label">Distance Driven</span>
+            </div>
+            <div class="telemetry-tile">
+              <span class="tile-number">1966 - 2026</span>
+              <span class="tile-label">Mission Epochs</span>
+            </div>
+            <div class="telemetry-tile">
+              <span class="tile-number" style="color: var(--status-active);">3 Active</span>
+              <span class="tile-label">Live Transmitters</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive 3D Canvas Globe & Landing Sites Radar -->
+        <div class="hero-right-globe">
+          <div class="planet-stage-card">
+            <div class="globe-header">
+              <span id="globe-target-badge" class="globe-badge">MARS (ARES)</span>
+              <span class="globe-tip">Drag to rotate • Click radar beacons</span>
+            </div>
+
+            <canvas id="planet-canvas" width="380" height="380"></canvas>
+
+            <!-- Real-time HUD stats for current celestial body -->
+            <div class="globe-hud-data">
+              <div class="hud-data-row">
+                <div class="hud-item">
+                  <span>Target:</span>
+                  <span id="hud-planet-name">Ares (Mars)</span>
+                </div>
+                <div class="hud-item">
+                  <span>Distance:</span>
+                  <span id="hud-distance">225M km</span>
+                </div>
+              </div>
+              <div class="hud-data-row">
+                <div class="hud-item">
+                  <span>Light Delay:</span>
+                  <span id="hud-light-delay">12.5 minutes</span>
+                </div>
+                <div class="hud-item">
+                  <span>Surface Gravity:</span>
+                  <span id="hud-gravity">3.72 m/s²</span>
+                </div>
+              </div>
+              <p id="hud-summary" class="hud-summary-text">
+                The rust-covered ancient world where NASA's robotic armada hunts for biosignatures, traverses canyons, climbs mountains, and caches rocks for human return.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= 4. RELICS EXPLORER & CATALOG ================= -->
+    <section id="explorer-section" class="explorer-section">
+      <div class="section-header-row">
+        <div>
+          <span class="section-tag">ARCHIVAL REGISTRY</span>
+          <h2 class="section-title">Satellites, Landers & Rovers of the Moon & Mars</h2>
+        </div>
+
+        <!-- Toolbar: Filters and Search -->
+        <div class="controls-toolbar">
+          <div class="filter-pills-group">
+            <button class="filter-pill active" data-type="all">All Vehicles</button>
+            <button class="filter-pill" data-type="Rover">Rovers</button>
+            <button class="filter-pill" data-type="Lander">Landers & Stages</button>
+            <button class="filter-pill" data-type="Orbiter">Orbiters & Satellites</button>
+            <button class="filter-pill" data-type="Active">Active Transmitters</button>
+          </div>
+
+          <div class="search-box-wrapper">
+            <span class="search-icon-symbol">🔍</span>
+            <input type="text" id="relic-search" placeholder="Search rover, crater, instrument..." aria-label="Search relics">
+          </div>
+        </div>
+
+        <div class="results-meta-bar">
+          <span id="results-count">Showing 18 NASA Relics & Sentinels</span>
+          <span>Click any vehicle card to inspect comprehensive story & schematics</span>
+        </div>
+      </div>
+
+      <!-- Relic Cards Dynamic Grid -->
+      <div id="relics-grid" class="relics-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- ================= 5. INTERACTIVE SIDE-BY-SIDE TECH MATRIX ================= -->
+    <section id="comparison-section" class="comparison-section">
+      <div class="section-header-row">
+        <span class="section-tag">AEROSPACE BENCHMARK</span>
+        <h2 class="section-title">Side-by-Side Spacecraft Comparison Matrix</h2>
+      </div>
+
+      <div class="comparison-box">
+        <div class="comp-selectors-bar">
+          <select id="comp-select-1" class="comp-select-control" aria-label="Select first vehicle to compare"></select>
+          <div class="comp-vs-badge">VS</div>
+          <select id="comp-select-2" class="comp-select-control" aria-label="Select second vehicle to compare"></select>
+        </div>
+
+        <div class="comp-comparison-grid">
+          <div id="comp-card-1" class="comp-vehicle-card"></div>
+          <div id="comp-card-2" class="comp-vehicle-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. DEEP SPACE TRANSMISSION DECK (TIME CAPSULE) ================= -->
+    <section id="transmission-section" class="transmission-section">
+      <div class="section-header-row">
+        <span class="section-tag">DEEP SPACE NETWORK TIME CAPSULE</span>
+        <h2 class="section-title">Transmit a Message to the Silent Sentinels</h2>
+      </div>
+
+      <div class="dsn-console-card">
+        <div class="dsn-grid">
+          <!-- Transmit Input Form -->
+          <form id="transmit-form" class="transmit-form">
+            <p style="color: #cbd5e1; font-size: 0.92rem; margin-bottom: 6px;">
+              Broadcast a message across space to the resting rovers and orbiters. The Deep Space Network simulator calculates radio transmission delay based on orbital light speed.
+            </p>
+
+            <div class="form-group">
+              <label for="transmit-target">Destination Body</label>
+              <select id="transmit-target">
+                <option value="Moon">The Moon (Luna) • 1.28 Light-Seconds Delay</option>
+                <option value="Mars">Mars (Ares) • ~14.2 Light-Minutes Delay</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="transmit-sender">Callsign / Explorer Name</label>
+              <input type="text" id="transmit-sender" placeholder="e.g., Space Apps Team Artemis" required>
+            </div>
+
+            <div class="form-group">
+              <label for="transmit-message">Transmission Payload</label>
+              <textarea id="transmit-message" rows="3" placeholder="Write your words of tribute or scientific inquiry to the relics..." required></textarea>
+            </div>
+
+            <!-- Animated Telemetry Waveform -->
+            <div>
+              <label style="font-family: var(--font-mono); font-size: 0.72rem; color: #64748b; text-transform: uppercase;">
+                Uplink Frequency: 8.4 GHz (X-Band Carrier Modulation)
+              </label>
+              <canvas id="waveform-canvas" width="400" height="48"></canvas>
+            </div>
+
+            <button type="submit" class="transmit-submit-btn">
+              TRANSMIT VIA DEEP SPACE NETWORK 📡
+            </button>
+          </form>
+
+          <!-- Past Transmissions Feed -->
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+              <span>COMMUNICATION LOGS</span>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--cyan-accent);">SYNCHRONIZED WITH EARTH DSN</span>
+            </h3>
+            <div id="transmission-logs" class="transmission-logs">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= 7. MISSION DOSSIER DETAIL MODAL ================= -->
+  <div id="dossier-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <button id="modal-close-btn" class="modal-close-btn" aria-label="Close Dossier">✕</button>
+
+      <div class="modal-banner">
+        <img id="modal-img" src="" alt="Spacecraft Banner" class="modal-banner-img">
+        <div class="modal-banner-overlay"></div>
+        <div class="modal-header-content">
+          <div id="modal-target" class="modal-target-label">MARS • ROVER</div>
+          <h2 id="modal-title" class="modal-title-text">Perseverance Rover</h2>
+          <div id="modal-site" class="modal-site-label">📍 Jezero Crater</div>
+          <div id="modal-status" class="modal-status-badge status-active">Active & Transmitting</div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- Story / Narrative -->
+        <div>
+          <h3 class="modal-section-title">The Untold Story & Mission Odyssey</h3>
+          <p id="modal-story" class="story-text"></p>
+        </div>
+
+        <!-- Technical Specifications Table -->
+        <div>
+          <h3 class="modal-section-title">Technical Specifications & Flight Data</h3>
+          <div id="modal-specs" class="specs-grid-box"></div>
+        </div>
+
+        <!-- Scientific Payloads -->
+        <div>
+          <h3 class="modal-section-title">Scientific Instruments & Onboard Experiments</h3>
+          <ul id="modal-instruments" class="modal-bullet-list"></ul>
+        </div>
+
+        <!-- Relics Left Behind -->
+        <div>
+          <h3 class="modal-section-title">Historical Relics & Messages Left Onboard</h3>
+          <ul id="modal-relics-left" class="modal-bullet-list"></ul>
+        </div>
+
+        <!-- Legacy & Present State -->
+        <div>
+          <h3 class="modal-section-title">Legacy & Present Resting State</h3>
+          <p id="modal-legacy" class="story-text" style="margin-bottom: 8px;"></p>
+          <div class="audio-telemetry-panel">
+            <div>
+              <p style="font-family: var(--font-mono); font-size: 0.8rem; color: #64748b;">RADIO STATUS</p>
+              <p id="modal-final-msg" style="font-family: var(--font-mono); font-size: 0.88rem; color: #00e5ff; font-style: italic;"></p>
+            </div>
+            <button id="modal-audio-play" class="icon-btn" style="border-color: var(--cyan-accent); color: var(--cyan-accent);">
+              <span>🔊</span>
+              <span>Play Telemetry Beep</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 8. SITE FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-logos">
+        <svg style="height: 38px; width: auto;" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="30" font-family="'Orbitron', sans-serif" font-weight="900" font-size="34" fill="#fc3d21" letter-spacing="3">NASA</text>
+        </svg>
+        <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--cyan-accent); letter-spacing: 0.15em;">SPACE APPS CHALLENGE</div>
+      </div>
+      <p class="footer-text">
+        Dedicated to the engineers, scientists, and astronauts who dared to send humanity's robotic eyes and footsteps into the extraterrestrial unknown. All archival telemetry sourced from NASA JPL, NASA Goddard, and the Deep Space Network.
+      </p>
+      <div class="footer-credits">
+        NASA Space Apps Challenge Hackathon Project • Built with Vanilla Web Technologies & Procedural Web Audio
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="scripts/data.js"></script>
+  <script src="scripts/audio.js"></script>
+  <script src="scripts/stars.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
